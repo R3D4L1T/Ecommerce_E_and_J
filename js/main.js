@@ -214,6 +214,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const couponMessageElement = document.getElementById("coupon-message");
   let discount = 0;
 
+  const proceedCheckoutButton = document.getElementById("proceed-checkout");
+
   function updateCart() {
     total = cart.reduce(
       (sum, product) =>
@@ -323,6 +325,10 @@ document.addEventListener("DOMContentLoaded", function () {
       discount = 0;
       couponMessageElement.textContent = "Cupon Invalido!!!";
     }
+  });
+
+  proceedCheckoutButton.addEventListener("click", function () {
+    window.location.href = "chackout.html";
   });
 
   // Initialize cart display
