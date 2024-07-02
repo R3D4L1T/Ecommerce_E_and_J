@@ -143,3 +143,167 @@
     button.parent().parent().find("input").val(newVal);
   });
 })(jQuery);
+
+// link to google maps
+document.addEventListener("DOMContentLoaded", function () {
+  const address = "1600 Amphitheatre Parkway, Mountain View, CA";
+  const mapLink = document.getElementById("mapLink");
+  mapLink.href = `https://www.google.com/maps/place/Jr.+Huancayo+209,+Cajamarca+06002/@-7.1650571,-78.5032663,18z/data=!4m5!3m4!1s0x91b25b1e123a1711:0x2671af9a87fc72f1!8m2!3d-7.1647242!4d-78.5025192?entry=ttu`;
+});
+
+// link to gmail message
+document.addEventListener("DOMContentLoaded", function () {
+  const email = " &JMini@markett.com";
+  const subject = "Subject Here";
+  const body = "Body content here";
+  const gmailLink = document.getElementById("gmailLink");
+  gmailLink.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+});
+
+// saved the product in the local store
+document.addEventListener("DOMContentLoaded", function () {
+  const addToCartButtons = document.querySelectorAll(".add-to-cart");
+  const cartCountElement = document.getElementById("cart-count");
+
+  let cartCount = JSON.parse(localStorage.getItem("cart"))?.length || 0;
+  cartCountElement.textContent = cartCount;
+
+  addToCartButtons.forEach((button) => {
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
+      const productElement = button.closest(".fruite-item");
+      const product = {
+        image: productElement.querySelector(".fruite-img img").src,
+        name: productElement.querySelector("h4").textContent,
+        price: productElement.querySelector(".fs-5").textContent,
+        quantity: 1,
+      };
+
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      let total = parseFloat(localStorage.getItem("total")) || 0;
+
+      // Check if the product is already in the cart
+      const productExists = cart.some((item) => item.name === product.name);
+
+      if (!productExists) {
+        cart.push(product);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        localStorage.setItem("total", total.toFixed(2));
+        cartCount += 1;
+        cartCountElement.textContent = cartCount;
+        console.log("Product added to cart!");
+      } else {
+        console.log("Product is already in the cart!");
+      }
+    });
+  });
+});
+
+// show products of the cart
+document.addEventListener("DOMContentLoaded", function () {
+  const cartItemsContainer = document.getElementById("cart-items");
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let total = parseFloat(localStorage.getItem("total")) || 0;
+  const totalElement = document.getElementById("total-amount");
+  const subtotalElement = document.getElementById("subtotal-amount");
+  const shippingCost = 3.0;
+
+  function updateCart() {
+    total = cart.reduce(
+      (sum, product) =>
+        sum +
+        parseFloat(product.price.replace(/[^\d.-]/g, "")) * product.quantity,
+      0,
+    );
+
+    // save update total to locasl storage
+    localStorage.setItem("total", total.toFixed(2));
+    // Save updated cart to local storage
+    localStorage.setItem("cart", JSON.stringify(cart));
+    // Refresh cart display
+    displayCart();
+  }
+
+  function displayCart() {
+    cartItemsContainer.innerHTML = "";
+    if (cart.length === 0) {
+      cartItemsContainer.innerHTML =
+        '<tr><td colspan="6" class="text-center">Your cart is empty.</td></tr>';
+    } else {
+      cart.forEach((product, index) => {
+        const productRow = document.createElement("tr");
+        const priceText = product.price.replace(/[^\d.-]/g, "");
+
+        const priceP = parseFloat(priceText);
+        const quantityP = parseFloat(product.quantity);
+
+        productRow.innerHTML = `
+                    <th scope="row">
+                        <div class="d-flex align-items-center">
+                            <img src="${product.image}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="${product.name}">
+                        </div>
+                    </th>
+                    <td>
+                        <p class="mb-0 mt-4">${product.name}</p>
+                    </td>
+                    <td>
+                        <p class="mb-0 mt-4">${product.price}</p>
+                    </td>
+                    <td>
+                        <div class="input-group quantity mt-4" style="width: 100px;">
+                            <div class="input-group-btn">
+                                <button class="btn btn-sm btn-minus rounded-circle bg-light border">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                            <input type="text" class="form-control form-control-sm text-center border-0" value="${product.quantity}">
+                            <div class="input-group-btn">
+                                <button class="btn btn-sm btn-plus rounded-circle bg-light border">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <p class="mb-0 mt-4"> S/ ${(priceP * quantityP).toFixed(2)}</p>
+                    </td>
+                    <td>
+                        <button class="btn btn-md rounded-circle bg-light border mt-4 remove-item">
+                            <i class="fa fa-times text-danger"></i>
+                        </button>
+                    </td>
+                `;
+
+        // Add event listeners for quantity buttons
+        productRow.querySelector(".btn-minus").addEventListener("click", () => {
+          if (product.quantity > 1) {
+            product.quantity -= 1;
+            updateCart();
+          }
+        });
+
+        productRow.querySelector(".btn-plus").addEventListener("click", () => {
+          product.quantity += 1;
+          updateCart();
+        });
+
+        // Add event listener for remove button
+        productRow
+          .querySelector(".remove-item")
+          .addEventListener("click", () => {
+            cart.splice(index, 1);
+            updateCart();
+          });
+
+        cartItemsContainer.appendChild(productRow);
+      });
+
+      // update subtotal and total elements to proced Checkout
+      subtotalElement.textContent = `S/ ${total.toFixed(2)}`;
+      totalElement.textContent = `S/ ${(total + shippingCost).toFixed(2)}`;
+    }
+  }
+
+  // Initialize cart display
+  displayCart();
+});
