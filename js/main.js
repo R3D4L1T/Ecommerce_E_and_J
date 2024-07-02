@@ -207,6 +207,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const totalElement = document.getElementById("total-amount");
   const subtotalElement = document.getElementById("subtotal-amount");
   const shippingCost = 3.0;
+  const couponInput = document.getElementById("coupon-code");
+  const applyCouponButton = document.getElementById("apply-coupon");
+  let discount = 0;
 
   function updateCart() {
     total = cart.reduce(
@@ -215,6 +218,7 @@ document.addEventListener("DOMContentLoaded", function () {
         parseFloat(product.price.replace(/[^\d.-]/g, "")) * product.quantity,
       0,
     );
+    total -= discount;
 
     // save update total to locasl storage
     localStorage.setItem("total", total.toFixed(2));
@@ -303,6 +307,19 @@ document.addEventListener("DOMContentLoaded", function () {
       totalElement.textContent = `S/ ${(total + shippingCost).toFixed(2)}`;
     }
   }
+
+  // apply coupon code
+  applyCouponButton.addEventListener("click", function () {
+    const couponCode = couponInput.value.trim();
+    if (couponCode == "aaaooo") {
+      discount = 5;
+      updateCart();
+      couponInput.textContent("");
+    } else {
+      discount = 0;
+      alert("cupon invalido");
+    }
+  });
 
   // Initialize cart display
   displayCart();
