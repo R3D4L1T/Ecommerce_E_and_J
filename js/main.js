@@ -188,6 +188,8 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!productExists) {
         cart.push(product);
         localStorage.setItem("cart", JSON.stringify(cart));
+
+        total += parseFloat(product.price.replace(/[^\d.-]/g, ""));
         localStorage.setItem("total", total.toFixed(2));
         cartCount += 1;
         cartCountElement.textContent = cartCount;
@@ -209,6 +211,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const shippingCost = 3.0;
   const couponInput = document.getElementById("coupon-code");
   const applyCouponButton = document.getElementById("apply-coupon");
+  const couponMessageElement = document.getElementById("coupon-message");
   let discount = 0;
 
   function updateCart() {
@@ -314,10 +317,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (couponCode == "aaaooo") {
       discount = 5;
       updateCart();
-      couponInput.textContent("");
+      couponInput.textContent = "";
+      couponMessageElement.textContent = "Descuento de S/ 5";
     } else {
       discount = 0;
-      alert("cupon invalido");
+      couponMessageElement.textContent = "Cupon Invalido!!!";
     }
   });
 
