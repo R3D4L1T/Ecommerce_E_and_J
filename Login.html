@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de sesión</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url(img/logo.png);
+            background-size: cover;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .login-container, .register-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+            margin: 10px;
+            width: 300px;
+        }
+        .login-container img {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+        .login-container h1, .register-container h1 {
+            margin-bottom: 20px;
+        }
+        .login-container input[type="text"],
+        .login-container input[type="password"],
+        .register-container input[type="text"],
+        .register-container input[type="email"],
+        .register-container input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #e20606;
+            border-radius: 4px;
+        }
+        .login-container input[type="submit"],
+        .register-container input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #d21414;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .login-container input[type="submit"]:hover,
+        .register-container input[type="submit"]:hover {
+            background-color: #d81313;
+        }
+        .switch-link {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-container">
+            <img src="logo.png" alt="logo">
+            <h1>Iniciar sesión</h1>
+            <form action="/login" method="post">
+                <input type="text" name="username" placeholder="Usuario" required>
+                <input type="password" name="password" placeholder="Contraseña" required>
+                <input type="submit" value="Iniciar sesión">
+            </form>
+            <div class="switch-link">
+                ¿No tienes cuenta? <a href="#register" onclick="switchToRegister()">Regístrate</a>
+            </div>
+        </div>
+
+        <div class="register-container" style="display: none;" id="register">
+            <h1>Crear cuenta</h1>
+            <form action="/login" method="post"></form>
+            <form action="/register" method="post">
+                <input type="text" name="username" placeholder="Usuario" required>
+                <input type="email" name="email" placeholder="Correo electrónico" required>
+                <input type="password" name="password" placeholder="Contraseña" required>
+                <input type="submit" value="Crear cuenta">
+            </form>
+            <div class="switch-link">
+                ¿Ya tienes cuenta? <a href="#login" onclick="switchToLogin()">Inicia sesión</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchToRegister() {
+            document.querySelector('.login-container').style.display = 'none';
+            document.querySelector('.register-container').style.display = 'block';
+        }
+
+        function switchToLogin() {
+            document.querySelector('.register-container').style.display = 'none';
+            document.querySelector('.login-container').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
